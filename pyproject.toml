@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "northwind-ops"
+version = "0.1.0"
+description = "Northwind order, billing and support operations library"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Tests live next to the code they test (test_<module>.py beside <module>.py),
+# so pytest collects from src/ rather than a separate tests/ directory.
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["src"]
+python_files = ["test_*.py"]
