@@ -6,3 +6,7 @@ __pycache__/
 .pytest_cache/
 .env
 .DS_Store
+
+# Claude Code personal files: never shared, never committed
+CLAUDE.local.md
+.claude/settings.local.json
