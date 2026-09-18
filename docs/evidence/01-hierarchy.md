@@ -25,9 +25,24 @@ Run `/context` in a session started in this repo (it also runs headlessly:
 | Project | /Users/demetrios/Documents/northwind-ops/CLAUDE.md     |    447 |
 ```
 
-`/memory` is interactive-only (`claude -p "/memory"` answers "isn't available in this
-environment"). Its screenshot is taken by hand; see `docs/CONFIG.md` once written, or run
-`/memory` in the extension and capture the list of project and user entries.
+### Screenshots (VS Code extension, session rooted in this repo)
+
+**Project vs user files.** The `/context` panel's "Memory files" section, labelled `/memory`:
+
+![Context usage: memory files](img/01-context-memory-files.png)
+
+`~/Documents/northwind-ops/CLAUDE.md` is the **project** file (committed, arrives with a
+clone). `~/.claude/rules/assignment3-personal.md` is the **user** file (home directory, never
+committed).
+
+**The `/memory` dialog** in the extension covers auto-memory only, and is empty for this
+project, so it does not list `CLAUDE.md` or rules files. That is why the split is shown via
+`/context`:
+
+![Memory dialog: auto-memory only](img/01-memory-dialog.png)
+
+(`/memory` is interactive-only: `claude -p "/memory"` answers "isn't available in this
+environment".)
 
 ## What a teammate sees
 
