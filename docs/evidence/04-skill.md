@@ -80,8 +80,31 @@ The inline run also reported that every test lacks the `# arrange` / `# act` / `
 markers from `tests.md`. The forked run did not. The rule **did** load inside the fork (the
 subagent transcript holds a `nested_memory` attachment for `tests.md`, flagged as a sidechain).
 The gap was the skill's own step 6, which said to sweep against `CLAUDE.md` only. Step 6 now
-also names the rules in `.claude/rules/`. This edit was made after the runs above and has not
-been re-run.
+also names the rules in `.claude/rules/`. This edit was made after the headless runs above; the
+live extension run below appears to confirm it.
+
+## Live run in the VS Code extension
+
+A fresh session, `/context` before and after running `/codebase-analysis src/northwind`:
+
+| | Before | After |
+|---|---|---|
+| Total context | 23.6k / 1.0M | 25.4k / 1.0M |
+| **Messages** | **8** | **1.7k** |
+| Memory files | 684 (`CLAUDE.md` 584 + user rule 100) | 684 |
+
+![Context before the skill](img/04-context-before-skill.png)
+
+![Context after the skill](img/04-context-after-skill.png)
+
+Running the whole analysis added about **1.7k tokens** to the main thread, against the 16.9k the
+same skill added when run inline (headless measurement above). The exploration happened in the
+forked subagent and never reached the conversation.
+
+The fragment of the answer visible behind the second panel reads "`sla.py` has no test, no test
+file follows the `tests.md` marker rule, and ...". That is the marker finding the pre-fix forked
+run left out, which is consistent with the step 6 fix working. Only a fragment is visible, so
+this is corroboration, not a full transcript.
 
 ## Try it live
 
