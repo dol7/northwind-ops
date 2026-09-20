@@ -147,13 +147,15 @@ Full log from the extension run, in order:
 11:28:21  session_start    Session 2 (only two lines, no path_glob_match)
 ```
 
-**The `/context` panel during Session 1** lists the two session-start files (684 tokens):
+**The `/context` panel after Session 1's read** lists only the two session-start files
+(684 tokens), even though the trace shows `tests.md` loaded at `11:14:29`:
 
-![Context usage during session 1](img/02-context-session1.png)
+![Context usage after session 1](img/02-context-session1.png)
 
 `~/Documents/northwind-ops/CLAUDE.md` (584) and `~/.claude/rules/assignment3-personal.md`
-(100). Whether the panel also picks up `tests.md` after the read is unconfirmed, so the trace
-log is the evidence for the path rule, not this panel.
+(100). `tests.md` is not listed. So `/context` (and the extension's `/memory`, which covers
+auto-memory only) cannot show a path-scoped rule loading. The `InstructionsLoaded` trace is the
+evidence for the path rule, and the changed behaviour of the edit is the corroboration.
 
 ## Reading versus editing
 
@@ -177,7 +179,8 @@ runs in a folder, Claude Code asks you to trust the workspace.
 
 ## Limits
 
-- Headless `claude -p "/context" --continue` did **not** list `tests.md` after a session that
-  had loaded it, so the trace log is the evidence, not `/context`.
+- `/context` does **not** list `tests.md` after a session that had loaded it: neither the
+  headless `claude -p "/context" --continue`, nor the live extension panel (screenshot above,
+  taken after the read). The trace log is the evidence, not `/context`.
 - Requires a Claude Code version with path-scoped rules and the `InstructionsLoaded` hook;
   these runs used 2.1.276. The `claude` on some PATHs is much older (2.1.81 here).
