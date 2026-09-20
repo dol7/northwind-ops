@@ -89,6 +89,48 @@ def test_fraud_mention_is_urgent():
 | B: `test_tickets.py` | 1 | 1 | 1 |
 | C: `refunds.py` (docstring) | 0 | 0 | 0 |
 
+## Live run in the VS Code extension
+
+Same rule, real extension session in this repo (not a scripted clone).
+
+**Session 1: edit a matching file.** Prompt: *In `src/northwind/billing/test_refunds.py` add
+one test: a refund of exactly 500.00 on a 600.00 order delivered 5 days ago is approved.*
+Trace log (`<repo>` = the working copy):
+
+```
+11:13:54  Project  session_start    <repo>/CLAUDE.md
+11:13:54  User     session_start    ~/.claude/rules/assignment3-personal.md
+11:14:29  Project  path_glob_match  <repo>/.claude/rules/tests.md  <- read <repo>/src/northwind/billing/test_refunds.py
+```
+
+The rule is absent at `session_start` and arrives 35 seconds later, when the test file is read.
+The edit Claude made follows it:
+
+```python
+def test_refund_of_exactly_the_limit_is_approved():
+    # arrange
+    order = _order("600.00", delivered_days_ago=5)
+    # act
+    decision = decide_refund(order, Decimal("500.00"), TODAY)
+    # assert
+    assert decision.approved
+```
+
+(`# arrange` / `# act` / `# assert` markers and a behaviour-named test; the full suite passes.)
+
+The `11:09:23` pair of `session_start` lines belongs to an earlier session whose prompt named
+the files but not a change. Claude asked what to change instead of reading a test file, so
+`tests.md` never loaded. That is a small example of the rule staying out until a matching file
+is read.
+
+**The `/context` panel during Session 1** lists the two session-start files (684 tokens):
+
+![Context usage during session 1](img/02-context-session1.png)
+
+`~/Documents/northwind-ops/CLAUDE.md` (584) and `~/.claude/rules/assignment3-personal.md`
+(100). Whether the panel also picks up `tests.md` after the read is unconfirmed, so the trace
+log is the evidence for the path rule, not this panel.
+
 ## Reading versus editing
 
 Path rules trigger when Claude **reads** a matching file, not on every tool call. An edit
