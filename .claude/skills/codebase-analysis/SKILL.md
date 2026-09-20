@@ -30,6 +30,8 @@ read-only: do not edit, create or run anything.
    references.
 6. Sweep every file against CLAUDE.md: `print()` in `src/`, logging shape, boolean naming
    (`is_` / `has_` / `can_`), `float` money, and clock reads (`date.today`, `datetime.now`).
+   Also check each file against any rule in `.claude/rules/` that applies to it (for example
+   `tests.md` for test files), and report those findings too.
 7. Note the longest functions and any function with more than three branches.
 
 ## Return (this is all the main conversation sees; 40 lines at most)
