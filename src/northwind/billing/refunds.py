@@ -20,7 +20,27 @@ class RefundDecision:
 
 
 def decide_refund(order: Order, amount: Decimal, today: date) -> RefundDecision:
-    """Decide a refund request. Anything over the auto-approval limit goes to a human."""
+    """Decide a refund request for an order.
+
+    ``amount`` is normalised with ``to_money`` and ``today`` is supplied by the
+    caller. Checks run in the order below and the first failure wins. Every
+    rejection returns ``approved=False`` with one of these reasons:
+
+    - ``"amount must be positive"``: the amount is zero or negative, so there
+      is nothing to refund.
+    - ``"amount exceeds the order subtotal"``: the request is larger than
+      ``order.subtotal``, so it would refund more than the customer paid for
+      the goods.
+    - ``"order has not been delivered"``: ``order.delivered_on`` is ``None``.
+      Refunds are only allowed once delivery is recorded.
+    - ``"outside the 30-day refund window"``: delivery was more than
+      ``REFUND_WINDOW_DAYS`` days before ``today``.
+    - ``"over the auto-approval limit"``: the request passes every rule but
+      exceeds ``AUTO_APPROVAL_LIMIT``. This is not a final refusal: the
+      decision has ``needs_human=True`` and must be reviewed by a person.
+
+    Otherwise the refund is approved with the reason ``"approved"``.
+    """
     amount = to_money(amount)
     if amount <= 0:
         return RefundDecision(False, "amount must be positive")
