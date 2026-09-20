@@ -83,6 +83,29 @@ to the tests. That convention appears only in `tests.md`, not in `CLAUDE.md`, so
 is the rule at work inside a command. It also shows that the starter's tests, written before
 the rule, do not follow it yet.
 
+## Live run in the VS Code extension
+
+A fresh extension session in this repo, typing `/teamreview src/northwind/orders`:
+
+- **`$ARGUMENTS` reached the command.** Claude reviewed exactly `src/northwind/orders`,
+  reading "all 7 .py files" in it (4 modules, 3 test files) plus `docs/architecture.md`.
+- **The path rule loaded during the review.** Claude said it applied "the test rules that
+  loaded when I opened the test files (`.claude/rules/tests.md`)", and reported that all 10
+  tests lack the `# arrange` / `# act` / `# assert` markers. That convention lives only in
+  `tests.md`.
+- **The command's output format was followed:** a table with `file:line | rule | problem |
+  suggested fix`, ending `Verdict: CHANGES REQUESTED`.
+- **The user-level rule was active too.** The reply opened with `TL;DR:`, from
+  `~/.claude/rules/assignment3-personal.md` (see `01-hierarchy.md`).
+
+The findings check out against the files: `grep` shows 10 test functions at the cited lines
+(`test_models.py` 9/14/19, `test_pricing.py` 14/20/24, `test_status.py` 6/10/15/20), and zero
+`# arrange` markers in `orders/`. The four source modules were reported clean, as they are.
+
+One design finding from the run: for `pytest.raises` tests the review noted that "act" and
+"assert" overlap, so the marker convention fits them poorly. A clarifying line in `tests.md`
+(for example, mark such tests `# act + assert`) would remove that friction.
+
 ## Try it live
 
 In the extension, type `/teamreview src/northwind/orders`. Autocomplete shows the
