@@ -123,6 +123,30 @@ the files but not a change. Claude asked what to change instead of reading a tes
 `tests.md` never loaded. That is a small example of the rule staying out until a matching file
 is read.
 
+**Session 2 (a fresh session): edit a non-matching file in the same directory.** Prompt:
+*In `src/northwind/billing/refunds.py` improve the docstring of `decide_refund` to explain
+each rejection reason. Edit only that file; do not read any other file.*
+
+```
+11:28:21  Project  session_start    <repo>/CLAUDE.md
+11:28:21  User     session_start    ~/.claude/rules/assignment3-personal.md
+                                    (no path_glob_match: tests.md never loaded)
+```
+
+Claude did edit `refunds.py` (it rewrote the docstring to list every rejection reason), so
+the file was read and changed, yet the rule stayed out of context. `refunds.py` sits in
+`billing/`, the same directory as `test_refunds.py` from Session 1. Only the file name
+differs, and that is all the glob looks at.
+
+Full log from the extension run, in order:
+
+```
+11:09:23  session_start    (earlier vague-prompt session: no test file read)
+11:13:54  session_start    Session 1
+11:14:29  path_glob_match  tests.md  <- read billing/test_refunds.py
+11:28:21  session_start    Session 2 (only two lines, no path_glob_match)
+```
+
 **The `/context` panel during Session 1** lists the two session-start files (684 tokens):
 
 ![Context usage during session 1](img/02-context-session1.png)
